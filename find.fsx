@@ -50,7 +50,7 @@ let availableDnsServers =
 
 let query address dnsServer =
     task {
-        use httpClient = new HttpClient()
+        use httpClient = new HttpClient(Timeout = TimeSpan.FromSeconds 1.0)
         httpClient.BaseAddress <- Uri dnsServer
         use dnsClient = new DnsHttpClient(httpClient) :> IDnsClient
         let query = DnsQueryFactory.CreateQuery address
@@ -76,15 +76,29 @@ let main () =
     task {
         let availablensServers = System.Collections.Generic.List<string * int64>()
 
-        for dnsServer in availableDnsServers do
-            try
-                let address = "www.google.com"
-                let! result, times = queryEvaluate address dnsServer
-                printfn "[+] Average Time: %d ms | %s | Response: %A" times dnsServer result.Answers[0].Resource
-                availablensServers.Add(dnsServer, times)
-            with ex ->
-                printfn "[ ] %s | Some error happened: %s" dnsServer ex.Message
+        let! _ =
+            [ for dnsServer in availableDnsServers do
+                  task {
+                      try
+                          let address = "www.google.com"
+                          let! result, times = queryEvaluate address dnsServer
+
+                          printfn
+                              "[+] Average Time: %d ms | %s | Response: %A"
+                              times
+                              dnsServer
+                              result.Answers[0].Resource
+
+                          availablensServers.Add(dnsServer, times)
+                      with ex ->
+                          printfn "[ ] %s | Some error happened: %s" dnsServer ex.Message
+                  } ]
+            |> Seq.map (fun x -> x |> Async.AwaitTask)
+            |> Async.Parallel
+            |> Async.Ignore
+
         printfn "Sorted DNS Servers:"
+
         availablensServers
         |> Seq.sortBy snd
         |> Seq.iter (fun (dnsServer, times) -> printfn "%d ms \t %s" times dnsServer)
