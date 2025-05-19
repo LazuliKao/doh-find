@@ -73,15 +73,15 @@
         // 稳定版 Quick and reliable DNS
         "https://common.dot.dns.yandex.net",
         "https://77.88.8.8",
-        "https://2a02:6b8::feed:0ff",
+        "https://[2a02:6b8::feed:0ff]",
         // 安全版 Protection from virus and fraudulent content
         "https://safe.dot.dns.yandex.net",
         "https://77.88.8.88",
-        "https://2a02:6b8::feed:bad",
+        "https://[2a02:6b8::feed:bad]",
         // 家庭版 block adult content
         "https://family.dot.dns.yandex.net",
         "https://77.88.8.7",
-        "https://2a02:6b8::feed:a11",
+        "https://[2a02:6b8::feed:a11]",
         // 101
         "https://dns.twnic.tw/dns-query",
         "https://doh.sb/dns-query",
