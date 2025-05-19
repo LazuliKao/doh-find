@@ -1,0 +1,125 @@
+{
+    // category: China DNS
+    "cn": [
+        // 阿里云公共 DNS 服务器
+        "https://dns.alidns.com/dns-query",
+        "https://223.5.5.5/dns-query",
+        "https://223.6.6.6/dns-query",
+        // 腾讯云公共 DNS 服务器
+        "https://doh.pub/dns-query",
+        "https://1.12.12.12/dns-query",
+        "https://120.53.53.53/dns-query",
+        "https://sm2.doh.pub/dns-query", //（基于腾讯云政企国密解决方案）
+        // 360 公共 DNS 服务器
+        "https://doh.360.cn/dns-query",
+        // 百度公共 DNS 服务器
+        "https://doh.baidu.com/dns-query",
+        // 114DNS
+        "https://dns.114dns.com/dns-query",
+        // OneDNS 服务器(北京微步在线科技有限公司提供的 DNS 服务)
+        "https://doh-pure.onedns.net/dns-query",
+        "https://doh.pub/dns-query",
+        "https://1.12.12.12/dns-query",
+        "https://120.53.53.53/dns-query",
+        "https://doh.360.cn/dns-query",
+        "https://doh.apad.pro/dns-query"
+    ],
+    // category: Public DNS
+    "global": [
+        // OpenDNS
+        "https://doh.opendns.com/dns-query",
+        "https://208.67.222.222/dns-query",
+        "https://208.67.220.220/dns-query",
+        // Cloudflare
+        "https://cloudflare-dns.com/dns-query",
+        "https://1.1.1.1/dns-query",
+        "https://1.0.0.1/dns-query",
+        // 安全版 Block malware
+        "https://security.cloudflare-dns.com/dns-query",
+        // 家庭版 Block malware and adult content
+        "https://family.cloudflare-dns.com/dns-query",
+        // Quad9 DNS
+        // 推荐版丨恶意软件拦截、DNSSEC验证：
+        "https://dns.quad9.net/dns-query",
+        // ECS安全保护版丨恶意软件拦截、DNSSEC验证、启用ECS：
+        "https://dns10.quad9.net/dns-query",
+        // 无防护版丨无恶意软件阻止，无DNSSEC验证：
+        "https://dns9.quad9.net/dns-query",
+        // AdGuard DNS
+        // 安全版丨拦截广告和跟踪器：
+        "https://dns.adguard-dns.com/dns-query",
+        "https://94.140.14.14/dns-query",
+        "https://94.140.15.15/dns-query",
+        // 无过滤版丨不拦截广告、跟踪器或其他任何 DNS 请求：
+        "https://unfiltered.adguard-dns.com/dns-query",
+        "https://94.140.14.140/dns-query",
+        "https://94.140.14.141/dns-query",
+        // 家庭保护版（过滤广告、跟踪器与成人内容）：
+        "https://family.adguard-dns.com/dns-query",
+        "https://94.140.14.15/dns-query",
+        "https://94.140.15.16/dns-query",
+        // DNS.SB (德国公共 DNS 服务商提供的 DNS 服务)
+        "https://doh.dns.sb/dns-query",
+        "https://doh.sb/dns-query",
+        "https://dns.sb/dns-query",
+        "https://185.222.222.222/dns-query",
+        // Cisco OpenDNS/Cisco Umbrella （思科）
+        "https://doh.opendns.com/dns-query",
+        "https://dns.opendns.com/dns-query",
+        "https://doh.umbrella.com/dns-query",
+        "https://dns.umbrella.com/dns-query",
+        "https://dns.sse.cisco.com/dns-query",
+        // Yandex DNS
+        // 稳定版 Quick and reliable DNS
+        "https://common.dot.dns.yandex.net",
+        "https://77.88.8.8",
+        "https://2a02:6b8::feed:0ff",
+        // 安全版 Protection from virus and fraudulent content
+        "https://safe.dot.dns.yandex.net",
+        "https://77.88.8.88",
+        "https://2a02:6b8::feed:bad",
+        // 家庭版 block adult content
+        "https://family.dot.dns.yandex.net",
+        "https://77.88.8.7",
+        "https://2a02:6b8::feed:a11",
+        // 101
+        "https://dns.twnic.tw/dns-query",
+        "https://doh.sb/dns-query",
+        "https://doh-jp.blahdns.com/dns-query",
+        "https://doh.dns.sb/dns-query",
+        "https://8.8.8.8/dns-query",
+        "https://8.8.4.4/dns-query",
+        "https://dns.google/dns-query",
+        "https://jp.tiarap.org/dns-query",
+        "https://dns.quad9.net/dns-query",
+        "https://dns10.quad9.net/dns-query",
+        "https://doh.cleanbrowsing.org/doh/security-filter/",
+        "https://doh.opendns.com/dns-query",
+        "https://dns-unfiltered.adguard.com/dns-query",
+        "https://9.9.9.9/dns-query",
+        "https://149.112.112.112/dns-query",
+        "https://max.rethinkdns.com/dns-query",
+        "https://sky.rethinkdns.com/dns-query",
+        "https://doh.opendns.com/dns-query",
+        "https://dns.cloudflare.com/dns-query",
+        "https://1.0.0.1/dns-query",
+        "https://dns.bebasid.com/unfiltered",
+        "https://0ms.dev/dns-query",
+        "https://dns.decloudus.com/dns-query",
+        "https://wikimedia-dns.org/dns-query",
+        "https://doh.applied-privacy.net/query",
+        "https://private.canadianshield.cira.ca/dns-query",
+        "https://dns.controld.com/comss",
+        "https://kaitain.restena.lu/dns-query",
+        "https://doh.libredns.gr/dns-query",
+        "https://doh.libredns.gr/ads",
+        "https://dns.switch.ch/dns-query",
+        "https://doh.nl.ahadns.net/dns-query",
+        "https://doh.la.ahadns.net/dns-query",
+        "https://dns.dnswarden.com/uncensored",
+        "https://doh.ffmuc.net/dns-query",
+        "https://dns.oszx.co/dns-query",
+        "https://doh.tiarap.org/dns-query",
+        "https://dns.adguard.com/dns-query"
+    ]
+}

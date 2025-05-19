@@ -1,4 +1,5 @@
 #r "nuget: Ae.Dns.Client, 3.0.0"
+#r "nuget: JsonhCs, 3.2.0"
 
 open System
 open System.Net.Http
@@ -6,56 +7,17 @@ open Ae.Dns.Client
 open Ae.Dns.Protocol
 open System.Diagnostics
 
+type DnsServerList =
+    { cn: string array
+      ``global``: string array }
+
+let dnsServerList =
+    use json = IO.File.OpenRead "list.json"
+    let element = JsonhCs.JsonhReader.ParseElement<DnsServerList> json
+    element.Value
+
 let availableDnsServers =
-    [
-      // category: China DNS
-      "https://dns.alidns.com/dns-query"
-      "https://223.5.5.5/dns-query"
-      "https://223.6.6.6/dns-query"
-      "https://doh.pub/dns-query"
-      "https://1.12.12.12/dns-query"
-      "https://120.53.53.53/dns-query"
-      "https://doh.360.cn/dns-query"
-      "https://doh.apad.pro/dns-query"
-      // category: Public DNS
-      "https://doh.sb/dns-query"
-      "https://doh-jp.blahdns.com/dns-query"
-      "https://doh.dns.sb/dns-query"
-      "https://dns.google/dns-query"
-      "https://jp.tiarap.org/dns-query"
-      "https://dns.quad9.net/dns-query"
-      "https://dns10.quad9.net/dns-query"
-      "https://doh.cleanbrowsing.org/doh/security-filter/"
-      "https://doh.opendns.com/dns-query"
-      "https://cloudflare-dns.com/dns-query"
-      "https://dns-unfiltered.adguard.com/dns-query"
-      "https://1.1.1.1/dns-query"
-      "https://1.0.0.1/dns-query"
-      "https://9.9.9.9/dns-query"
-      "https://149.112.112.112/dns-query"
-      "https://max.rethinkdns.com/dns-query"
-      "https://sky.rethinkdns.com/dns-query"
-      "https://doh.opendns.com/dns-query"
-      "https://dns.cloudflare.com/dns-query"
-      "https://1.0.0.1/dns-query"
-      "https://dns.bebasid.com/unfiltered"
-      "https://0ms.dev/dns-query"
-      "https://dns.decloudus.com/dns-query"
-      "https://wikimedia-dns.org/dns-query"
-      "https://doh.applied-privacy.net/query"
-      "https://private.canadianshield.cira.ca/dns-query"
-      "https://dns.controld.com/comss"
-      "https://kaitain.restena.lu/dns-query"
-      "https://doh.libredns.gr/dns-query"
-      "https://doh.libredns.gr/ads"
-      "https://dns.switch.ch/dns-query"
-      "https://doh.nl.ahadns.net/dns-query"
-      "https://doh.la.ahadns.net/dns-query"
-      "https://dns.dnswarden.com/uncensored"
-      "https://doh.ffmuc.net/dns-query"
-      "https://dns.oszx.co/dns-query"
-      "https://doh.tiarap.org/dns-query"
-      "https://dns.adguard.com/dns-query" ]
+    Array.concat [ dnsServerList.cn; dnsServerList.``global`` ] |> Array.distinct
 
 let query address dnsServer =
     task {
@@ -125,20 +87,18 @@ type IpRange(ip: IPAddress, mask: int) =
 
 let googleRangeJson =
     task {
+        // https://support.google.com/a/answer/10026322?hl=zh-Hans
         let file = "goog.json"
 
         let! json =
-            async {
+            task {
                 if IO.File.Exists file then
                     let! json = IO.File.ReadAllTextAsync file |> Async.AwaitTask
                     return json
                 else
                     use httpClient = new HttpClient(Timeout = TimeSpan.FromSeconds 20.0)
 
-                    let! response =
-                        httpClient.GetStringAsync "https://www.gstatic.com/ipranges/goog.json"
-                        |> Async.AwaitTask
-
+                    let! response = httpClient.GetStringAsync "https://www.gstatic.com/ipranges/goog.json"
                     return response
             }
 
@@ -202,15 +162,15 @@ let getIpLocation (ip: string) =
     }
 
 let main () =
-    task {
+    async {
         let availablensServers = Collections.Generic.List<string * int64 * string>()
 
         let! _ =
             [ for dnsServer in availableDnsServers do
-                  task {
+                  async {
                       try
                           let address = "www.google.com"
-                          let! result, times = queryEvaluate address dnsServer
+                          let! result, times = queryEvaluate address dnsServer |> Async.AwaitTask
                           // for all
                           let isGoogle =
                               result.Answers |> Seq.forall (fun x -> isInGoogleRange (x.Resource.ToString()))
@@ -225,23 +185,21 @@ let main () =
                           if isGoogle then
                               availablensServers.Add(dnsServer, times, result.Answers[0].Resource.ToString())
                       with ex ->
-                          ()
-                  //   printfn "[ ] %s | Some error happened: %s" dnsServer ex.Message
+                          printfn "[ ] %s | Some error happened: %s" dnsServer ex.Message
                   } ]
-            |> Seq.map (fun x -> x |> Async.AwaitTask)
-            |> Async.Parallel
+            |> fun tasks -> Async.Parallel(tasks, 8) // 限制最大并发数为8
             |> Async.Ignore
 
         printfn "Sorted DNS Servers:"
 
         for dnsServer, times, result in availablensServers |> Seq.sortBy (fun (_, t, _) -> t) do
-            printfn "%d ms \t %s" times dnsServer
+            printfn "%d ms\t%s\t%s" times dnsServer result
 
             try
-                let! location = getIpLocation result
-                printfn "\tA:%s  %s" result location
-            with ex ->
-                printfn "\tA:%s  %s" result ex.Message
+                let! location = getIpLocation result |> Async.AwaitTask
+                printfn "\t %s" location
+            with _ ->
+                ()
     }
 
-main () |> Async.AwaitTask |> Async.RunSynchronously
+main () |> Async.RunSynchronously
